@@ -3,6 +3,7 @@ package compat
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/containers/podman/v4/libpod"
@@ -73,8 +74,9 @@ func ExecCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Run the exit command after 5 minutes, to mimic Docker's exec cleanup
 	// behavior.
+	logrus.Debugf("ExitCommandDelay after %s seconds", strconv.FormatUint(uint64(runtimeConfig.Engine.ExitCommandDelay), 10))
 	libpodConfig.ExitCommandDelay = runtimeConfig.Engine.ExitCommandDelay
-
+	git
 	sessID, err := ctr.ExecCreate(libpodConfig)
 	if err != nil {
 		if errors.Cause(err) == define.ErrCtrStateInvalid {
